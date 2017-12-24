@@ -14,7 +14,14 @@ pub struct Register<'a> {
 impl<'a> Register<'a> {
 
     pub fn set_bits(&mut self, value: &'a str) {
-        self.bits = value
+        let s = String::from(value);
+        let len = s.to_string().chars().count();
+        if self.bitwidth == len { 
+            self.bits = value
+        }
+        else {
+            panic!("Register takes {} bits, and you tried to store {}.", self.bitwidth, len)
+        }
     }
 
 }
@@ -36,5 +43,20 @@ mod tests {
         r.set_bits("0001");
         assert!(r.bits.contains("0001"));
     }
+
+    #[test]
+    #[should_panic]
+    fn register_overflow() {
+        let mut r = Register { bits: "0000", bitwidth: 4 };
+        r.set_bits("01111");
+    }
+
+    #[test]
+    #[should_panic]
+    fn register_underflow() {
+        let mut r = Register { bits: "0000", bitwidth: 4 };
+        r.set_bits("111");
+    }
+
 
 }
