@@ -6,9 +6,12 @@
 /// let mut r = Register { bits: "0000", bitwidth: 4 };
 /// ```
 
+use std::fmt;
+
+#[derive(Clone)]
 pub struct Register<'a> {
-    bits: &'a str,
-    bitwidth: usize,
+    pub bits: &'a str,
+    pub bitwidth: usize,
 }
 
 impl<'a> Register<'a> {
@@ -23,8 +26,14 @@ impl<'a> Register<'a> {
             panic!("Register takes {} bits, and you tried to store {}.", self.bitwidth, len)
         }
     }
-
 }
+
+impl<'a> fmt::Display for Register<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}]", self.bits)
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

@@ -8,6 +8,7 @@
 
 mod mux;
 mod register;
+mod register_file;
 
 use mux::Mux;
 use register::Register;
