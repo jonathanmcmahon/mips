@@ -6,42 +6,38 @@
 /// let m = Mux { input0: '0000', input1: '1110', '0', 4};
 /// ```
 
-pub struct Mux<'a> {
-    pub input0: &'a str,
-    pub input1: &'a str,
-    pub switch: char,
+pub struct Mux {
+    pub inputs: Vec<String>,
+    pub n_inputs: usize,
+    pub switch: usize,
     pub bitwidth: usize,
 }
 
-impl<'a> Mux<'a> {
-    pub fn set_input0(&mut self, input: &'a str) {
-        let s = String::from(input);
-        if self.get_bitwidth() == s.to_string().chars().count() { 
-            self.input0 = input
+impl Mux {
+    pub fn new(n_inputs: usize, bitwidth: usize) -> Mux {
+        let mut m = Mux { bitwidth, n_inputs, switch: 0, inputs : vec!["".to_string(); n_inputs] };
+        for i in 0..n_inputs {
+            m.set_input(i, "0".repeat(bitwidth))
         }
-        else {
-            panic!("Fiddlesticks!")
-        }
-        println!("self.input0: {}", self.input0)
+        m
     }
 
-    fn set_input1(&mut self, input: &'a str) {
-        let s = String::from(input);
-        if self.get_bitwidth() == s.to_string().chars().count() { 
-            self.input1 = input
+    pub fn set_input(&mut self, input: usize, bits: String) {
+        if self.get_bitwidth() == bits.to_string().chars().count() { 
+            self.inputs[input] = bits.to_string()
         }
         else {
-            panic!("Fiddlesticks!")
+            panic!("Input should be {} bits!", self.get_bitwidth())
         }
-        println!("self.input1: {}", self.input0)
+        println!("self.input[{}]: {}", input, self.inputs[input])
     }
 
-    pub fn set_switch(&mut self, v: char) {
-        if v == '0' || v == '1' {
+    pub fn set_switch(&mut self, v: usize) {
+        if 0 <= v && v < self.n_inputs {
             self.switch = v
         }
         else {
-            panic!("You did a bad.")
+            panic!("Invalid switch selection.")
         }
     }
 
@@ -57,7 +53,7 @@ mod tests {
 
     #[test]
     fn input0_holds_correct_value() {
-        let m = Mux { input0: "0000", input1: "1110", switch: '0', bitwidth: 4};
-        assert!(m.input0.contains("0000"));
+        let m = Mux::new(2, 4);
+        assert!(m.inputs[0].contains("0000"));
     }
 }
